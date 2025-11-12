@@ -232,7 +232,7 @@ export default function HomepageDrugSearch() {
     }
   }, []);
   return (
-    <div className="min-h-screen bg-slate-50 text-gray-800">
+    <div className="min-h-screen bg-slate-50 text-gray-800 font-sans ">
       <Navbar />
 
       <main className="pt-24 pb-8">

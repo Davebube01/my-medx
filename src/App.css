@@ -1,4 +1,4 @@
-
+@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -127,4 +127,13 @@
   .font-mono {
     font-family: 'JetBrains Mono', monospace;
   }
+}
+
+@theme {
+  --font-sans: "Ubuntu", sans-serif;
+  --font-alt: "Poppins", sans-serif;
+
+  --color-secondary: #F58400;
+  --color-primary: #155dfc;
+
 }
