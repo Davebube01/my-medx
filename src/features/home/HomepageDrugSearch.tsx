@@ -371,8 +371,8 @@ export default function HomepageDrugSearch() {
                   </div>
                   
                   <div className="text-center">
-                    <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <Clock size={24} className="text-accent" />
+                    <div className="w-16 h-16 bg-teal-600/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <Clock size={24} className="text-teal-600" />
                     </div>
                     <h3 className="font-semibold text-foreground mb-2">Real-time Info</h3>
                     <p className="text-sm text-text-secondary">
