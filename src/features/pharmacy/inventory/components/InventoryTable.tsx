@@ -40,7 +40,8 @@ const TABLE_COLUMNS: TableColumn[] = [
   { key: 'form', label: 'Form' },
   { key: 'currentStock', label: 'Current Stock' },
   { key: 'minThreshold', label: 'Min Threshold' },
-  { key: 'price', label: 'Price' },
+  // { key: 'price', label: 'Price' },
+  { key: 'expiryDate', label: 'Expiry Date' },
   { key: 'lastUpdated', label: 'Last Updated' }
 ];
 
@@ -179,7 +180,7 @@ export default function InventoryTable({
                       <span className="text-sm text-foreground">{item?.minThreshold}</span>
                     )}
                   </td>
-                  <td className="px-4 py-3">
+                  {/* <td className="px-4 py-3">
                     {isEditing ? (
                       <Input
                         type="number"
@@ -191,7 +192,8 @@ export default function InventoryTable({
                     ) : (
                       <span className="text-sm text-foreground">${item?.price?.toFixed(2)}</span>
                     )}
-                  </td>
+                  </td> */}
+                   <td className="px-4 py-3 text-sm text-foreground">{new Date(item?.expiryDate).toLocaleDateString()}</td>
                   <td className="px-4 py-3 text-sm text-text-secondary">
                     {new Date(item.lastUpdated)?.toLocaleDateString()}
                   </td>

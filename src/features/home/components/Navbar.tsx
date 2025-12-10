@@ -121,7 +121,7 @@ export default function Navbar({
               <Heart className="mr-2" size={18} />
               <span>Favorites</span>
             </Button>
-            <Button variant="outline" className="hover:bg-orange-500 hover:text-white" onClick={()=>navigate("pharmacy/dashboard")}>
+            <Button variant="outline" className="hover:bg-orange-500 hover:text-white" onClick={()=>navigate("auth/register")}>
               <User className="mr-2" size={18} />
               <span>Sign In</span>
             </Button>
