@@ -1,64 +1,122 @@
-import { BrowserRouter, Routes as RouterRoutes, Route } from "react-router-dom";
-import ScrollToTop from "./components/ScrollToTop";
+import { Routes as ReactRoutes, Route, Navigate } from "react-router-dom";
+import { SignIn } from "./features/auth/SignIn";
+import { RoleSelect } from "./features/auth/RoleSelect";
+import { ProtectedRoute } from "./features/auth/ProtectedRoute";
+
+// Pharmacy
+import { PharmacyDashboard } from "./features/pharmacy/PharmacyDashboard";
+import { PharmacyPOS } from "./features/pharmacy/PharmacyPOS";
+import { PharmacyInventory } from "./features/pharmacy/PharmacyInventory";
+
+// PHC
+import { PHCDashboard } from "./features/phc/PHCDashboard";
+import { PHCDispense } from "./features/phc/PHCDispense";
+import { PHCInventory } from "./features/phc/PHCInventory";
+import { PatientManager } from "./features/phc/PatientManager";
+
 import HomepageDrugSearch from "./features/home/HomepageDrugSearch";
-import NotFound from "./components/NotFound";
-import Login from "./features/auth/Login";
-import AuthLayout from "./features/auth/AuthLayout";
-import PharmacyLayout from "./features/pharmacy/PharmacyLayout";
-import PharmacyDashboard from "./features/pharmacy/dashboard/PharmacyDashboard";
-import Inventory from "./features/pharmacy/inventory/Inventory";
-import PharmacyProfile from "./features/pharmacy/pharmacyProfile/PharmacyProfile";
-import React, { Suspense } from "react";
-import { PhcProvider } from "./features/phc/phcContext";
-import PHCLayouts from "./features/phc/PHCLayouts";
-import Register from "./features/auth/Register";
 
-const PhcHome = React.lazy(() => import("./features/phc/components/PhcHome"));
-const PatientList = React.lazy(() => import("./features/phc/components/PatientList"));
-const PatientForm = React.lazy(() => import("./features/phc/components/PatientForm"));
-const PatientProfile = React.lazy(() => import("./features/phc/components/PatientProfile"));
-const CreateDispense = React.lazy(() => import("./features/phc/components/CreateDispense"));
-const InventoryList = React.lazy(() => import("./features/phc/components/InventoryList"));
-const MasterList = React.lazy(() => import("./features/phc/components/MasterList"));
-const DispenseHistory = React.lazy(() => import("./features/phc/components/DispenseHistory"));
-const Settings = React.lazy(() => import("./features/phc/components/Settings"));
-
-const Routes = () => {
+export const AppRoutes = () => {
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <RouterRoutes>
-        {/* Define your route here */}
-        <Route path="/" element={<HomepageDrugSearch />} />
-        <Route path="/auth" element={<AuthLayout/>}>
-          <Route path="login" element={<Login/>}/>
-          <Route path="register" element={<Register/>}/>        </Route>
+    <ReactRoutes>
+      <Route path="/" element={<HomepageDrugSearch />} />
+      <Route path="/login" element={<SignIn />} />
 
-        {/* Pharmacy */}
-        <Route path="/pharmacy" element={<PharmacyLayout />}>
-          <Route path="dashboard" element={<PharmacyDashboard/>}/>
-          <Route path="inventory-management" element={<Inventory />}/>
-          <Route path="pharmacy-profile" element={<PharmacyProfile/>}/>
-        </Route>
+      {/* Auth Selection */}
+      <Route
+        path="/role-select"
+        element={
+          <ProtectedRoute>
+            <RoleSelect />
+          </ProtectedRoute>
+        }
+      />
 
-        {/* PHC module */}
-        <Route path="/phc" element={<PHCLayouts/>}>
-          <Route path="dashboard" element={<PhcProvider><Suspense fallback={<div>Loading...</div>}><PhcHome/></Suspense></PhcProvider>} />
-          <Route path="patients" element={<PhcProvider><Suspense fallback={<div>Loading...</div>}><PatientList/></Suspense></PhcProvider>} />
-          <Route path="patients/new" element={<PhcProvider><Suspense fallback={<div>Loading...</div>}><PatientForm/></Suspense></PhcProvider>} />
-          <Route path="patients/:phoneOrId" element={<PhcProvider><Suspense fallback={<div>Loading...</div>}><PatientProfile/></Suspense></PhcProvider>} />
-          <Route path="dispense" element={<PhcProvider><Suspense fallback={<div>Loading...</div>}><CreateDispense/></Suspense></PhcProvider>} />
-          <Route path="inventory" element={<PhcProvider><Suspense fallback={<div>Loading...</div>}><InventoryList/></Suspense></PhcProvider>} />
-          <Route path="masterlist" element={<PhcProvider><Suspense fallback={<div>Loading...</div>}><MasterList/></Suspense></PhcProvider>} />
-          <Route path="dispense/history" element={<PhcProvider><Suspense fallback={<div>Loading...</div>}><DispenseHistory/></Suspense></PhcProvider>} />
-          <Route path="settings" element={<PhcProvider><Suspense fallback={<div>Loading...</div>}><Settings/></Suspense></PhcProvider>} />
-        </Route>
-        
+      {/* Pharmacy Routes */}
+      <Route path="/pharmacy">
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route
+          path="dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["pharmacy"]}>
+              <PharmacyDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="pos"
+          element={
+            <ProtectedRoute allowedRoles={["pharmacy"]}>
+              <PharmacyPOS />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="inventory"
+          element={
+            <ProtectedRoute allowedRoles={["pharmacy"]}>
+              <PharmacyInventory />
+            </ProtectedRoute>
+          }
+        />
+        {/* Placeholder for Sales History */}
+        <Route
+          path="sales"
+          element={<div className="p-8">Sales History Placeholder</div>}
+        />
+        <Route
+          path="profile"
+          element={<div className="p-8">Pharmacy Profile Placeholder</div>}
+        />
+      </Route>
 
-        <Route path="*" element={<NotFound />} />
-      </RouterRoutes>
-    </BrowserRouter>
+      {/* PHC Routes */}
+      <Route path="/phc">
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route
+          path="dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["phc"]}>
+              <PHCDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="dispense"
+          element={
+            <ProtectedRoute allowedRoles={["phc"]}>
+              <PHCDispense />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="inventory"
+          element={
+            <ProtectedRoute allowedRoles={["phc"]}>
+              <PHCInventory />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="patients"
+          element={
+            <ProtectedRoute allowedRoles={["phc"]}>
+              <PatientManager />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="history"
+          element={<div className="p-8">Dispense History Placeholder</div>}
+        />
+        <Route
+          path="settings"
+          element={<div className="p-8">PHC Settings Placeholder</div>}
+        />
+      </Route>
+
+      {/* Fallback */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </ReactRoutes>
   );
 };
-
-export default Routes;
