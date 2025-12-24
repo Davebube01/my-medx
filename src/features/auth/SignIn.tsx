@@ -1,5 +1,5 @@
 import { useAuth } from "../../hooks/useAuth";
-import { useNavigate, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
 
 export const SignIn = () => {

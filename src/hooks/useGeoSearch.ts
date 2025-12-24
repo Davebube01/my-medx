@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { MOCK_PHARMACY } from '../data/mockData';
-import { haversineDistance, getBoundingBox } from '../utils/geo';
+import { haversineDistance} from '../utils/geo';
 import type { GeoPoint, Pharmacy } from '../types';
 
 export const useGeoSearch = () => {
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState<Pharmacy[]>([]);
 
-    const searchPharmacies = async (drugName: string, userLocation: GeoPoint) => {
+    const searchPharmacies = async (_drugName: string, userLocation: GeoPoint) => {
         setLoading(true);
         // Simulate network delay
         await new Promise(resolve => setTimeout(resolve, 600));
