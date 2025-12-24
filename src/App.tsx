@@ -1,13 +1,17 @@
-import './App.css'
-import Routes from './Routes'
+
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./hooks/useAuth";
+import { AppRoutes } from "./Routes";
+import "./index.css";
 
 function App() {
-
   return (
-    <>
-     <Routes />
-    </>
-  )
+    <AuthProvider>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;

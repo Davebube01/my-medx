@@ -1,7 +1,13 @@
-import { Heart, MapPin, Search, User, Menu } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
-import { Link,  useNavigate } from 'react-router-dom';
-import { Button } from '../../../components/ui/button';
+import { Heart, MapPin, Search, User, Menu } from "lucide-react";
+import {
+  useState,
+  useEffect,
+  type FC,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "../../../components/ui/button";
 
 interface NavbarProps {
   onSearch?: (value: string) => void;
@@ -12,13 +18,13 @@ interface NavbarProps {
 interface SearchBarProps {
   isMobile?: boolean;
   localSearchValue: string;
-  handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSearchSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  handleSearchChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleSearchSubmit: (e: FormEvent<HTMLFormElement>) => void;
   isSearching?: boolean;
 }
 
 // 🔹 SearchBar defined outside Navbar (prevents input from losing focus)
-const SearchBar: React.FC<SearchBarProps> = ({
+const SearchBar: FC<SearchBarProps> = ({
   isMobile = false,
   localSearchValue,
   handleSearchChange,
@@ -27,7 +33,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
 }) => (
   <form
     onSubmit={handleSearchSubmit}
-    className={`flex items-center gap-2 ${isMobile ? 'w-full' : 'max-w-md w-full'}`}
+    className={`flex items-center gap-2 ${
+      isMobile ? "w-full" : "max-w-md w-full"
+    }`}
   >
     <div className="relative flex-1">
       <input
@@ -47,14 +55,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
       className="bg-blue-500 hover:bg-blue-600 text-white"
       disabled={!localSearchValue.trim() || isSearching}
     >
-      {isSearching ? 'Searching...' : 'Search'}
+      {isSearching ? "Searching..." : "Search"}
     </Button>
   </form>
 );
 
 export default function Navbar({
   onSearch,
-  searchValue = '',
+  searchValue = "",
   isSearching = false,
 }: NavbarProps) {
   const navigate = useNavigate();
@@ -68,14 +76,14 @@ export default function Navbar({
     }
   }, [searchValue]);
 
-  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (onSearch && localSearchValue.trim()) {
       onSearch(localSearchValue.trim());
     }
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLocalSearchValue(e.target.value);
   };
 
@@ -113,15 +121,25 @@ export default function Navbar({
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" className="hover:bg-orange-500 hover:text-white">
+            <Button
+              variant="ghost"
+              className="hover:bg-orange-500 hover:text-white"
+            >
               <MapPin className="mr-2" size={18} />
               <span>Find Nearby</span>
             </Button>
-            <Button variant="ghost" className="hover:bg-orange-500 hover:text-white">
+            <Button
+              variant="ghost"
+              className="hover:bg-orange-500 hover:text-white"
+            >
               <Heart className="mr-2" size={18} />
               <span>Favorites</span>
             </Button>
-            <Button variant="outline" className="hover:bg-orange-500 hover:text-white" onClick={()=>navigate("auth/register")}>
+            <Button
+              variant="outline"
+              className="hover:bg-orange-500 hover:text-white"
+              onClick={() => navigate("login")}
+            >
               <User className="mr-2" size={18} />
               <span>Sign In</span>
             </Button>
@@ -176,10 +194,16 @@ export default function Navbar({
               </div>
 
               <div className="pt-4 border-t border-gray-200 space-y-1">
-                <Button variant="ghost" className="w-full justify-start text-gray-600">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-gray-600"
+                >
                   Help & Support
                 </Button>
-                <Button variant="ghost" className="w-full justify-start text-gray-600">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-gray-600"
+                >
                   About MedX
                 </Button>
               </div>
@@ -194,20 +218,24 @@ export default function Navbar({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="text-sm text-gray-600 mb-2">Popular searches:</div>
             <div className="flex flex-wrap gap-2">
-              {['Aspirin', 'Ibuprofen', 'Acetaminophen', 'Insulin', 'Blood pressure medication'].map(
-                (suggestion) => (
-                  <button
-                    key={suggestion}
-                    onClick={() => {
-                      setLocalSearchValue(suggestion);
-                      if (onSearch) onSearch(suggestion);
-                    }}
-                    className="px-3 py-1 bg-gray-100 text-gray-700 hover:bg-blue-500 hover:text-white rounded-full text-sm transition-colors"
-                  >
-                    {suggestion}
-                  </button>
-                )
-              )}
+              {[
+                "Aspirin",
+                "Ibuprofen",
+                "Acetaminophen",
+                "Insulin",
+                "Blood pressure medication",
+              ].map((suggestion) => (
+                <button
+                  key={suggestion}
+                  onClick={() => {
+                    setLocalSearchValue(suggestion);
+                    if (onSearch) onSearch(suggestion);
+                  }}
+                  className="px-3 py-1 bg-gray-100 text-gray-700 hover:bg-blue-500 hover:text-white rounded-full text-sm transition-colors"
+                >
+                  {suggestion}
+                </button>
+              ))}
             </div>
           </div>
         </div>

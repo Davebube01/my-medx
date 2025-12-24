@@ -1,7 +1,7 @@
-import { Clock, MapPin, Phone, Star, Plus, Minus, Target } from 'lucide-react';
-import React, { useState, useEffect, useRef } from 'react';
-import { Button } from '../../../components/ui/button';
-import type { Pharmacy } from '../HomepageDrugSearch';
+import { Clock, MapPin, Phone, Star, Plus, Minus, Target } from "lucide-react";
+import { useState, useEffect, useRef, type FC } from "react";
+import { Button } from "../../../components/ui/button";
+import type { Pharmacy } from "../HomepageDrugSearch";
 
 interface Location {
   lat: number;
@@ -32,126 +32,129 @@ interface InteractiveMapProps {
   className?: string;
 }
 
-const InteractiveMap: React.FC<InteractiveMapProps> = ({ 
-  pharmacies = [], 
-  userLocation = null, 
-  selectedPharmacy = null, 
+const InteractiveMap: FC<InteractiveMapProps> = ({
+  pharmacies = [],
+  userLocation = null,
+  selectedPharmacy = null,
   onPharmacySelect,
   searchRadius = 5,
-  className = "" 
+  className = "",
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const [mapCenter, setMapCenter] = useState<Location>({ lat: 40.7128, lng: -74.0060 }); // Default to NYC
+  const [mapCenter, setMapCenter] = useState<Location>({
+    lat: 40.7128,
+    lng: -74.006,
+  }); // Default to NYC
   const [zoomLevel, setZoomLevel] = useState<number>(12);
 
   // Mock pharmacy data with locations
   const mockPharmacies: Pharmacy[] = [
-  {
-    id: 1,
-    name: "HealthPlus Pharmacy",
-    address: "123 Main St, New York, NY 10001",
-    phone: "(555) 123-4567",
-    lat: 40.7589,
-    lng: -73.9851,
-    distance: 2.3,
-    rating: 4.8,
-    reviewCount: 342,
-    isOpen: true,
-    hours: "Open until 9:00 PM",
-    availableDrugs: ["Aspirin", "Ibuprofen", "Insulin"],
-    totalDrugs: 1247,
-    hasParking: true,
-    acceptsInsurance: true,
-    services: ["Blood Pressure Check", "Vaccinations", "Prescription Refill"],
-    hasDelivery: true,
-    hasDriveThrough: false,
-    is24Hours: false
-  },
-  {
-    id: 2,
-    name: "MediCare Central",
-    address: "456 Broadway, New York, NY 10013",
-    phone: "(555) 234-5678",
-    lat: 40.7505,
-    lng: -73.9934,
-    distance: 1.8,
-    rating: 4.6,
-    reviewCount: 278,
-    isOpen: true,
-    hours: "Open 24 hours",
-    availableDrugs: ["Aspirin", "Metformin"],
-    totalDrugs: 892,
-    hasParking: true,
-    acceptsInsurance: true,
-    services: ["Vaccinations", "Emergency Prescriptions", "Consultation"],
-    hasDelivery: true,
-    hasDriveThrough: true,
-    is24Hours: true
-  },
-  {
-    id: 3,
-    name: "QuickMeds Pharmacy",
-    address: "789 5th Ave, New York, NY 10022",
-    phone: "(555) 345-6789",
-    lat: 40.7614,
-    lng: -73.9776,
-    distance: 3.1,
-    rating: 4.4,
-    reviewCount: 189,
-    isOpen: false,
-    hours: "Closed • Opens 8:00 AM",
-    availableDrugs: ["Ibuprofen"],
-    totalDrugs: 654,
-    hasParking: false,
-    acceptsInsurance: true,
-    services: ["Prescription Pickup", "Blood Sugar Testing"],
-    hasDelivery: false,
-    hasDriveThrough: false,
-    is24Hours: false
-  },
-  {
-    id: 4,
-    name: "Family Drug Store",
-    address: "321 Park Ave, New York, NY 10010",
-    phone: "(555) 456-7890",
-    lat: 40.7282,
-    lng: -73.9942,
-    distance: 4.2,
-    rating: 4.7,
-    reviewCount: 314,
-    isOpen: true,
-    hours: "Open until 8:00 PM",
-    availableDrugs: ["Aspirin", "Insulin", "Lisinopril"],
-    totalDrugs: 1156,
-    hasParking: true,
-    acceptsInsurance: false,
-    services: ["Vaccinations", "Prescription Delivery", "Consultation"],
-    hasDelivery: true,
-    hasDriveThrough: false,
-    is24Hours: false
-  },
-  {
-    id: 5,
-    name: "Metro Pharmacy",
-    address: "654 Lexington Ave, New York, NY 10022",
-    phone: "(555) 567-8901",
-    lat: 40.7549,
-    lng: -73.9707,
-    distance: 2.9,
-    rating: 4.5,
-    reviewCount: 256,
-    isOpen: true,
-    hours: "Open until 10:00 PM",
-    availableDrugs: ["Metformin", "Atorvastatin"],
-    totalDrugs: 978,
-    hasParking: false,
-    acceptsInsurance: true,
-    services: ["Flu Shots", "Health Screening", "Refill Reminders"],
-    hasDelivery: true,
-    hasDriveThrough: true,
-    is24Hours: false
-  }
-];
+    {
+      id: 1,
+      name: "HealthPlus Pharmacy",
+      address: "123 Main St, New York, NY 10001",
+      phone: "(555) 123-4567",
+      lat: 40.7589,
+      lng: -73.9851,
+      distance: 2.3,
+      rating: 4.8,
+      reviewCount: 342,
+      isOpen: true,
+      hours: "Open until 9:00 PM",
+      availableDrugs: ["Aspirin", "Ibuprofen", "Insulin"],
+      totalDrugs: 1247,
+      hasParking: true,
+      acceptsInsurance: true,
+      services: ["Blood Pressure Check", "Vaccinations", "Prescription Refill"],
+      hasDelivery: true,
+      hasDriveThrough: false,
+      is24Hours: false,
+    },
+    {
+      id: 2,
+      name: "MediCare Central",
+      address: "456 Broadway, New York, NY 10013",
+      phone: "(555) 234-5678",
+      lat: 40.7505,
+      lng: -73.9934,
+      distance: 1.8,
+      rating: 4.6,
+      reviewCount: 278,
+      isOpen: true,
+      hours: "Open 24 hours",
+      availableDrugs: ["Aspirin", "Metformin"],
+      totalDrugs: 892,
+      hasParking: true,
+      acceptsInsurance: true,
+      services: ["Vaccinations", "Emergency Prescriptions", "Consultation"],
+      hasDelivery: true,
+      hasDriveThrough: true,
+      is24Hours: true,
+    },
+    {
+      id: 3,
+      name: "QuickMeds Pharmacy",
+      address: "789 5th Ave, New York, NY 10022",
+      phone: "(555) 345-6789",
+      lat: 40.7614,
+      lng: -73.9776,
+      distance: 3.1,
+      rating: 4.4,
+      reviewCount: 189,
+      isOpen: false,
+      hours: "Closed • Opens 8:00 AM",
+      availableDrugs: ["Ibuprofen"],
+      totalDrugs: 654,
+      hasParking: false,
+      acceptsInsurance: true,
+      services: ["Prescription Pickup", "Blood Sugar Testing"],
+      hasDelivery: false,
+      hasDriveThrough: false,
+      is24Hours: false,
+    },
+    {
+      id: 4,
+      name: "Family Drug Store",
+      address: "321 Park Ave, New York, NY 10010",
+      phone: "(555) 456-7890",
+      lat: 40.7282,
+      lng: -73.9942,
+      distance: 4.2,
+      rating: 4.7,
+      reviewCount: 314,
+      isOpen: true,
+      hours: "Open until 8:00 PM",
+      availableDrugs: ["Aspirin", "Insulin", "Lisinopril"],
+      totalDrugs: 1156,
+      hasParking: true,
+      acceptsInsurance: false,
+      services: ["Vaccinations", "Prescription Delivery", "Consultation"],
+      hasDelivery: true,
+      hasDriveThrough: false,
+      is24Hours: false,
+    },
+    {
+      id: 5,
+      name: "Metro Pharmacy",
+      address: "654 Lexington Ave, New York, NY 10022",
+      phone: "(555) 567-8901",
+      lat: 40.7549,
+      lng: -73.9707,
+      distance: 2.9,
+      rating: 4.5,
+      reviewCount: 256,
+      isOpen: true,
+      hours: "Open until 10:00 PM",
+      availableDrugs: ["Metformin", "Atorvastatin"],
+      totalDrugs: 978,
+      hasParking: false,
+      acceptsInsurance: true,
+      services: ["Flu Shots", "Health Screening", "Refill Reminders"],
+      hasDelivery: true,
+      hasDriveThrough: true,
+      is24Hours: false,
+    },
+  ];
 
   const displayPharmacies = pharmacies.length > 0 ? pharmacies : mockPharmacies;
 
@@ -171,11 +174,11 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   };
 
   const handleZoomIn = () => {
-    setZoomLevel(prev => Math.min(prev + 1, 18));
+    setZoomLevel((prev) => Math.min(prev + 1, 18));
   };
 
   const handleZoomOut = () => {
-    setZoomLevel(prev => Math.max(prev - 1, 8));
+    setZoomLevel((prev) => Math.max(prev - 1, 8));
   };
 
   const handleRecenter = () => {
@@ -187,28 +190,36 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
   const getPharmacyMarkerColor = (pharmacy: Pharmacy): string => {
     if (selectedPharmacy && selectedPharmacy.id === pharmacy.id) {
-      return 'bg-purple-500';
+      return "bg-purple-500";
     }
-    return pharmacy.isOpen ? 'bg-green-500' : 'bg-red-500';
+    return pharmacy.isOpen ? "bg-green-500" : "bg-red-500";
   };
 
   const getDistanceFromUser = (pharmacy: Pharmacy): number | null => {
     if (!userLocation) return null;
-    
+
     const R = 6371; // Earth's radius in km
-    const dLat = (pharmacy.lat - userLocation.lat) * Math.PI / 180;
-    const dLng = (pharmacy.lng - userLocation.lng) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(userLocation.lat * Math.PI / 180) * Math.cos(pharmacy.lat * Math.PI / 180) *
-              Math.sin(dLng/2) * Math.sin(dLng/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const dLat = ((pharmacy.lat - userLocation.lat) * Math.PI) / 180;
+    const dLng = ((pharmacy.lng - userLocation.lng) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((userLocation.lat * Math.PI) / 180) *
+        Math.cos((pharmacy.lat * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   };
 
   return (
-    <div className={`relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm ${className}`}>
+    <div
+      className={`relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm ${className}`}
+    >
       {/* Map Container */}
-      <div ref={mapRef} className="w-full h-full min-h-[400px] relative bg-gray-100">
+      <div
+        ref={mapRef}
+        className="w-full h-full min-h-[400px] relative bg-gray-100"
+      >
         {/* Google Maps Iframe */}
         <iframe
           width="100%"
@@ -232,12 +243,14 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                 className="absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-auto"
                 style={{
                   left: `${50 + (pharmacy.lng - mapCenter.lng) * 1000}%`,
-                  top: `${50 - (pharmacy.lat - mapCenter.lat) * 1000}%`
+                  top: `${50 - (pharmacy.lat - mapCenter.lat) * 1000}%`,
                 }}
               >
                 <button
                   onClick={() => handlePharmacyClick(pharmacy)}
-                  className={`w-8 h-8 rounded-full ${getPharmacyMarkerColor(pharmacy)} text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform`}
+                  className={`w-8 h-8 rounded-full ${getPharmacyMarkerColor(
+                    pharmacy
+                  )} text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform`}
                   aria-label={`Select ${pharmacy.name}`}
                 >
                   <MapPin size={16} />
@@ -248,50 +261,71 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-white border border-gray-200 rounded-lg p-3 shadow-lg z-10">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-900 truncate">{pharmacy.name}</h3>
-                        <p className="text-sm text-gray-600">{pharmacy.address}</p>
+                        <h3 className="font-semibold text-gray-900 truncate">
+                          {pharmacy.name}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {pharmacy.address}
+                        </p>
                       </div>
-                      <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        pharmacy.isOpen 
-                          ? 'bg-green-100 text-green-700' 
-                          : 'bg-red-100 text-red-700'
-                      }`}>
-                        {pharmacy.isOpen ? 'Open' : 'Closed'}
+                      <div
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          pharmacy.isOpen
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {pharmacy.isOpen ? "Open" : "Closed"}
                       </div>
                     </div>
-                    
+
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center space-x-2">
                         <Clock size={14} className="text-gray-500" />
                         <span className="text-gray-600">{pharmacy.hours}</span>
                       </div>
-                      
+
                       <div className="flex items-center space-x-2">
                         <Phone size={14} className="text-gray-500" />
                         <span className="text-gray-600">{pharmacy.phone}</span>
                       </div>
-                      
+
                       <div className="flex items-center space-x-2">
-                        <Star size={14} className="text-amber-500" fill="currentColor" />
-                        <span className="text-gray-600">{pharmacy.rating} rating</span>
+                        <Star
+                          size={14}
+                          className="text-amber-500"
+                          fill="currentColor"
+                        />
+                        <span className="text-gray-600">
+                          {pharmacy.rating} rating
+                        </span>
                       </div>
-                      
+
                       {distance && (
                         <div className="flex items-center space-x-2">
                           <MapPin size={14} className="text-gray-500" />
-                          <span className="text-gray-600">{distance.toFixed(1)} km away</span>
+                          <span className="text-gray-600">
+                            {distance.toFixed(1)} km away
+                          </span>
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="mt-3 pt-2 border-t border-gray-200">
-                      <div className="text-xs text-gray-600 mb-1">Available drugs:</div>
+                      <div className="text-xs text-gray-600 mb-1">
+                        Available drugs:
+                      </div>
                       <div className="flex flex-wrap gap-1">
-                        {pharmacy.availableDrugs.slice(0, 3).map((drug, index) => (
-                          <span key={index} className="px-2 py-1 bg-blue-50 text-blue-600 text-xs rounded-full">
-                            {drug}
-                          </span>
-                        ))}
+                        {pharmacy.availableDrugs
+                          .slice(0, 3)
+                          .map((drug, index) => (
+                            <span
+                              key={index}
+                              className="px-2 py-1 bg-blue-50 text-blue-600 text-xs rounded-full"
+                            >
+                              {drug}
+                            </span>
+                          ))}
                         {pharmacy.availableDrugs.length > 3 && (
                           <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
                             +{pharmacy.availableDrugs.length - 3} more
@@ -311,7 +345,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
               className="absolute transform -translate-x-1/2 -translate-y-1/2"
               style={{
                 left: `${50 + (userLocation.lng - mapCenter.lng) * 1000}%`,
-                top: `${50 - (userLocation.lat - mapCenter.lat) * 1000}%`
+                top: `${50 - (userLocation.lat - mapCenter.lat) * 1000}%`,
               }}
             >
               <div className="w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-lg animate-pulse"></div>
