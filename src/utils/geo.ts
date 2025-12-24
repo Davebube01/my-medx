@@ -1,4 +1,4 @@
-import { GeoPoint } from '../types';
+import type { GeoPoint } from '../types';
 
 /**
  * Calculates the distance between two coordinates in kilometers using the Haversine formula.
