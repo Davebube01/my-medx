@@ -164,19 +164,25 @@ export const PharmacyPOS = () => {
                       <label className="text-xs text-gray-500 block mb-1">
                         Price (₦)
                       </label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={item.price}
-                        onChange={(e) =>
-                          updateItem(
-                            idx,
-                            "price",
-                            parseFloat(e.target.value) || 0
-                          )
-                        }
-                        className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-right"
-                      />
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+                          ₦
+                        </span>
+                        <input
+                          type="number"
+                          min="0"
+                          value={item.price === 0 ? "" : item.price}
+                          placeholder="0"
+                          onChange={(e) =>
+                            updateItem(
+                              idx,
+                              "price",
+                              parseFloat(e.target.value) || 0
+                            )
+                          }
+                          className="w-full pl-7 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-right focus:ring-2 focus:ring-blue-500 outline-none"
+                        />
+                      </div>
                     </div>
 
                     <button

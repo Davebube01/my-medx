@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { PageLayout } from "../../components/shared/PageLayout";
-import { InventoryTable } from "../../components/shared/InventoryTable";
+import { Datagrid } from "../../components/shared/Datagrid";
 import { useInventory } from "../../hooks/useInventory";
 import { Plus } from "lucide-react";
 import { DrugSearchInput } from "../../components/shared/DrugSearchInput";
 import type { Drug } from "../../types";
+import type { ColDef } from "ag-grid-community";
 
 export const PharmacyInventory = () => {
   const { getInventoryWithDetails, addToInventory, updateStock } =
@@ -12,17 +13,62 @@ export const PharmacyInventory = () => {
   const inventory = getInventoryWithDetails();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
+  // Column Definitions
+  const colDefs = useMemo<ColDef[]>(
+    () => [
+      { field: "drugName", headerName: "Drug Name", flex: 2, filter: true },
+      {
+        field: "quantity",
+        headerName: "Stock Level",
+        filter: "agNumberColumnFilter",
+      },
+      {
+        headerName: "Status",
+        valueGetter: (p) =>
+          p.data.quantity <= p.data.lowStockThreshold
+            ? "Low Stock"
+            : "In Stock",
+        cellRenderer: (p: any) => (
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium ${
+              p.value === "Low Stock"
+                ? "bg-red-100 text-red-700"
+                : "bg-green-100 text-green-700"
+            }`}
+          >
+            {p.value}
+          </span>
+        ),
+      },
+      { field: "expiryDate", headerName: "Expiry Date" },
+      {
+        headerName: "Actions",
+        cellRenderer: (p: any) => (
+          <button
+            onClick={() => updateStock(p.data.drugId, 10)}
+            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+          >
+            Restock (+10)
+          </button>
+        ),
+      },
+    ],
+    [updateStock]
+  );
+
   // Modal State
   const [selectedDrug, setSelectedDrug] = useState<Drug | null>(null);
   const [qty, setQty] = useState(0);
   const [threshold, setThreshold] = useState(10);
+  const [expiry, setExpiry] = useState("");
 
   const handleAddSubmit = () => {
     if (!selectedDrug) return;
-    addToInventory(selectedDrug.id, qty, threshold);
+    addToInventory(selectedDrug.id, qty, threshold, expiry);
     setIsAddModalOpen(false);
     setSelectedDrug(null);
     setQty(0);
+    setExpiry("");
   };
 
   return (
@@ -38,11 +84,7 @@ export const PharmacyInventory = () => {
         </button>
       }
     >
-      <InventoryTable
-        items={inventory}
-        role="pharmacy"
-        onUpdateStock={(id) => updateStock(id, 10)} // simple +10 mock
-      />
+      <Datagrid rowData={inventory} colDefs={colDefs} />
 
       {/* Simple Add Modal Overlay */}
       {isAddModalOpen && (
@@ -91,6 +133,18 @@ export const PharmacyInventory = () => {
                     type="number"
                     value={threshold}
                     onChange={(e) => setThreshold(Number(e.target.value))}
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Expiry Date (Optional)
+                  </label>
+                  <input
+                    type="date"
+                    value={expiry}
+                    onChange={(e) => setExpiry(e.target.value)}
                     className="w-full px-3 py-2 border rounded-lg"
                   />
                 </div>

@@ -7,12 +7,18 @@ import { ProtectedRoute } from "./features/auth/ProtectedRoute";
 import { PharmacyDashboard } from "./features/pharmacy/PharmacyDashboard";
 import { PharmacyPOS } from "./features/pharmacy/PharmacyPOS";
 import { PharmacyInventory } from "./features/pharmacy/PharmacyInventory";
+import { PharmacyHistory } from "./features/pharmacy/PharmacyHistory";
+import { PharmacySettings } from "./features/pharmacy/PharmacySettings";
+import { PharmacyDrugs } from "./features/pharmacy/PharmacyDrugs";
 
 // PHC
 import { PHCDashboard } from "./features/phc/PHCDashboard";
 import { PHCDispense } from "./features/phc/PHCDispense";
 import { PHCInventory } from "./features/phc/PHCInventory";
 import { PatientManager } from "./features/phc/PatientManager";
+import { PHCHistory } from "./features/phc/PHCHistory";
+import { PHCSettings } from "./features/phc/PHCSettings";
+import { PHCDrugs } from "./features/phc/PHCDrugs";
 
 import HomepageDrugSearch from "./features/home/HomepageDrugSearch";
 
@@ -59,14 +65,29 @@ export const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        {/* Placeholder for Sales History */}
         <Route
           path="sales"
-          element={<div className="p-8">Sales History Placeholder</div>}
+          element={
+            <ProtectedRoute allowedRoles={["pharmacy"]}>
+              <PharmacyHistory />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="profile"
-          element={<div className="p-8">Pharmacy Profile Placeholder</div>}
+          element={
+            <ProtectedRoute allowedRoles={["pharmacy"]}>
+              <PharmacySettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="drugs"
+          element={
+            <ProtectedRoute allowedRoles={["pharmacy"]}>
+              <PharmacyDrugs />
+            </ProtectedRoute>
+          }
         />
       </Route>
 
@@ -107,11 +128,27 @@ export const AppRoutes = () => {
         />
         <Route
           path="history"
-          element={<div className="p-8">Dispense History Placeholder</div>}
+          element={
+            <ProtectedRoute allowedRoles={["phc"]}>
+              <PHCHistory />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="settings"
-          element={<div className="p-8">PHC Settings Placeholder</div>}
+          element={
+            <ProtectedRoute allowedRoles={["phc"]}>
+              <PHCSettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="drugs"
+          element={
+            <ProtectedRoute allowedRoles={["phc"]}>
+              <PHCDrugs />
+            </ProtectedRoute>
+          }
         />
       </Route>
 

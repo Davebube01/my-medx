@@ -1,16 +1,61 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { PageLayout } from "../../components/shared/PageLayout";
-import { InventoryTable } from "../../components/shared/InventoryTable";
+import { Datagrid } from "../../components/shared/Datagrid";
 import { useInventory } from "../../hooks/useInventory";
 import { Plus } from "lucide-react";
 import { DrugSearchInput } from "../../components/shared/DrugSearchInput";
 import type { Drug } from "../../types";
+import type { ColDef } from "ag-grid-community";
 
 export const PHCInventory = () => {
   const { getInventoryWithDetails, addToInventory, updateStock } =
     useInventory();
   const inventory = getInventoryWithDetails();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  // Column Definitions
+  const colDefs = useMemo<ColDef[]>(
+    () => [
+      { field: "drugName", headerName: "Drug Name", flex: 2, filter: true },
+      {
+        field: "quantity",
+        headerName: "Stock Level",
+        filter: "agNumberColumnFilter",
+      },
+      {
+        headerName: "Status",
+        valueGetter: (p) =>
+          p.data.quantity <= p.data.lowStockThreshold
+            ? "Low Stock"
+            : "In Stock",
+        cellRenderer: (p: any) => (
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium ${
+              p.value === "Low Stock"
+                ? "bg-red-100 text-red-700"
+                : "bg-green-100 text-green-700"
+            }`}
+          >
+            {p.value}
+          </span>
+        ),
+      },
+      { field: "batchNumber", headerName: "Batch #", filter: true },
+      { field: "expiryDate", headerName: "Expiry Date" },
+      {
+        headerName: "Actions",
+        cellRenderer: (p: any) => (
+          <button
+            onClick={() => updateStock(p.data.drugId, 10)}
+            className="text-green-600 hover:text-green-800 text-sm font-medium"
+          >
+            Restock (+10)
+          </button>
+        ),
+      },
+    ],
+    [updateStock]
+  );
 
   // Modal State
   const [selectedDrug, setSelectedDrug] = useState<Drug | null>(null);
@@ -42,11 +87,7 @@ export const PHCInventory = () => {
         </button>
       }
     >
-      <InventoryTable
-        items={inventory}
-        role="phc"
-        onUpdateStock={(id) => updateStock(id, 10)}
-      />
+      <Datagrid rowData={inventory} colDefs={colDefs} />
 
       {/* PHC has batch/expiry input in modal */}
       {isAddModalOpen && (
