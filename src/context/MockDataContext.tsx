@@ -3,10 +3,9 @@ import {
   MOCK_INVENTORY_PHARMACY,
   MOCK_INVENTORY_PHC,
   MOCK_PATIENTS,
-  MOCK_DRUGS,
   MOCK_PHC_DISPENSES,
 } from "../data/mockData";
-import type { InventoryItem, Drug, Patient } from "../types";
+import type { InventoryItem, Patient } from "../types";
 
 interface MockDataContextType {
   pharmacyInventory: Record<string, InventoryItem>;
@@ -33,7 +32,7 @@ export const MockDataProvider = ({ children }: { children: ReactNode }) => {
   );
   const [phcInventory, setPhcInventory] = useState(MOCK_INVENTORY_PHC);
   const [patients, setPatients] = useState(MOCK_PATIENTS);
-  const [dispenseHistory, setDispenseHistory] = useState(MOCK_PHC_DISPENSES);
+  const [dispenseHistory, _setDispenseHistory] = useState(MOCK_PHC_DISPENSES);
 
   const addToPharmacyInventory = (item: InventoryItem) => {
     setPharmacyInventory((prev) => ({
