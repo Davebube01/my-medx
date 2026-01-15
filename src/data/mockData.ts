@@ -118,3 +118,18 @@ export const MOCK_PATIENTS: Patient[] = [
         visits: 3
     }
 ];
+
+export const MOCK_PHC_DISPENSES: Purchase[] = [
+  {
+    purchaseId: 'disp_20250110_001',
+    traceId: 'T-20250110-PHC001',
+    ownerType: 'phc',
+    ownerId: 'phc001',
+    userPhone: '+2348055551234', // Matches Amina Yusuf
+    items: [
+       { inventoryId: 'paracetamol_500mg', qty: 10 }
+    ],
+    totalItems: 10,
+    createdAt: '2025-01-10T09:00:00Z',
+  }
+];
