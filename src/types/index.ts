@@ -1,4 +1,4 @@
-export type Role = "user" | "pharmacy" | "phc" | "admin";
+export type Role = "user" | "pharmacy" | "phc" | "admin" | "oversight";
 
 export interface GeoPoint {
   latitude: number;

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useMockData } from "../../context/MockDataContext";
 import Navbar from "./components/Navbar";
 import DrugSearchBar, { type Drug } from "./components/DrugSearchBar";
 import LocationControls from "./components/LoacationControls";
@@ -59,77 +60,16 @@ export default function HomepageDrugSearch() {
 
   // UI state
   const [selectedPharmacy, setSelectedPharmacy] = useState<Pharmacy | null>(
-    null
+    null,
   );
   const [mobileView, setMobileView] = useState("map"); // 'map' or 'list'
   const [activeFilters, setActiveFilters] = useState<FilterId[]>([]);
 
-  // Mock search results
-  const mockSearchResults = [
-    {
-      id: 1,
-      name: "HealthPlus Pharmacy",
-      address: "123 Main St, New York, NY 10001",
-      phone: "(555) 123-4567",
-      lat: 40.7589,
-      lng: -73.9851,
-      distance: 2.3,
-      rating: 4.8,
-      reviewCount: 124,
-      isOpen: true,
-      hours: "Open until 9:00 PM",
-      availableDrugs: ["Aspirin", "Ibuprofen", "Insulin", "Metformin"],
-      totalDrugs: 1247,
-      hasParking: true,
-      acceptsInsurance: true,
-      services: ["Prescription Refills", "Vaccinations", "Health Screenings"],
-      hasDelivery: false,
-      hasDriveThrough: false,
-      is24Hours: false,
-    },
-    {
-      id: 2,
-      name: "MediCare Central",
-      address: "456 Broadway, New York, NY 10013",
-      phone: "(555) 234-5678",
-      lat: 40.7505,
-      lng: -73.9934,
-      distance: 1.8,
-      rating: 4.6,
-      reviewCount: 89,
-      isOpen: true,
-      hours: "Open 24 hours",
-      availableDrugs: ["Aspirin", "Metformin", "Lisinopril"],
-      totalDrugs: 892,
-      hasParking: false,
-      acceptsInsurance: true,
-      services: ["24/7 Service", "Emergency Prescriptions", "Delivery"],
-      hasDelivery: true,
-      hasDriveThrough: true,
-      is24Hours: true,
-    },
-    {
-      id: 3,
-      name: "QuickMeds Pharmacy",
-      address: "789 5th Ave, New York, NY 10022",
-      phone: "(555) 345-6789",
-      lat: 40.7614,
-      lng: -73.9776,
-      distance: 3.1,
-      rating: 4.4,
-      reviewCount: 67,
-      isOpen: false,
-      hours: "Closed • Opens 8:00 AM",
-      availableDrugs: ["Ibuprofen", "Atorvastatin"],
-      totalDrugs: 654,
-      hasParking: true,
-      acceptsInsurance: true,
-      services: ["Drive-through", "Online Ordering"],
-      hasDelivery: false,
-      hasDriveThrough: true,
-      is24Hours: false,
-    },
-  ];
+  const { publicPharmacies } = useMockData();
+  // Cast to local Pharmacy type if needed, or better, ensure types match.
+  // For now we assume they are compatible as we copied the structure.
+  const mockSearchResults = publicPharmacies as unknown as Pharmacy[];
+  // Mock data removed in favor of Context
 
   // Handle search
   const handleSearch = async (query: string) => {
@@ -137,8 +77,19 @@ export default function HomepageDrugSearch() {
     setIsSearching(true);
 
     // Simulate API call
+    // Simulate API call with local filtering
     setTimeout(() => {
-      setSearchResults(mockSearchResults);
+      if (!query) {
+        setSearchResults(mockSearchResults);
+      } else {
+        const lowerQuery = query.toLowerCase();
+        const filtered = mockSearchResults.filter((pharmacy) =>
+          pharmacy.availableDrugs.some((drug) =>
+            drug.toLowerCase().includes(lowerQuery),
+          ),
+        );
+        setSearchResults(filtered);
+      }
       setIsSearching(false);
     }, 1500);
   };
@@ -156,7 +107,7 @@ export default function HomepageDrugSearch() {
     setSearchRadius(radius);
     if (searchResults?.length > 0) {
       const filtered = mockSearchResults?.filter(
-        (pharmacy) => pharmacy?.distance <= radius
+        (pharmacy) => pharmacy?.distance <= radius,
       );
       setSearchResults(filtered);
     }
@@ -220,14 +171,14 @@ export default function HomepageDrugSearch() {
           setUserLocation({
             lat: position?.coords?.latitude,
             lng: position?.coords?.longitude,
-            accuracy: position?.coords?.accuracy
+            accuracy: position?.coords?.accuracy,
           });
           setIsDetectingLocation(false);
         },
         () => {
           setIsDetectingLocation(false);
         },
-        { timeout: 5000, maximumAge: 300000 }
+        { timeout: 5000, maximumAge: 300000 },
       );
     }
   }, []);
@@ -292,7 +243,9 @@ export default function HomepageDrugSearch() {
           {searchResults?.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Map View */}
-              <div className={`lg:col-span-2 ${mobileView === 'list' ? 'hidden lg:block' : ''}`}>
+              <div
+                className={`lg:col-span-2 ${mobileView === "list" ? "hidden lg:block" : ""}`}
+              >
                 <InteractiveMap
                   pharmacies={filteredResults}
                   userLocation={userLocation}
@@ -304,7 +257,9 @@ export default function HomepageDrugSearch() {
               </div>
 
               {/* Results List */}
-              <div className={`lg:col-span-1 ${mobileView === 'map' ? 'hidden lg:block' : ''}`}>
+              <div
+                className={`lg:col-span-1 ${mobileView === "map" ? "hidden lg:block" : ""}`}
+              >
                 <PharmacyResultsList
                   pharmacies={filteredResults}
                   onPharmacySelect={handlePharmacySelect}
@@ -317,11 +272,14 @@ export default function HomepageDrugSearch() {
             </div>
           ) : searchQuery && !isSearching ? (
             // No Results State
-            (<div className="text-center py-12">
+            <div className="text-center py-12">
               <Search size={64} className="text-text-secondary mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-foreground mb-2">No pharmacies found</h3>
+              <h3 className="text-xl font-semibold text-foreground mb-2">
+                No pharmacies found
+              </h3>
               <p className="text-text-secondary mb-6">
-                We couldn't find any pharmacies with "{searchQuery}" in your area. Try:
+                We couldn't find any pharmacies with "{searchQuery}" in your
+                area. Try:
               </p>
               <div className="space-y-2 text-sm text-text-secondary max-w-md mx-auto">
                 <div className="flex items-center space-x-2">
@@ -344,37 +302,43 @@ export default function HomepageDrugSearch() {
               >
                 Expand Search Area
               </Button>
-            </div>)
+            </div>
           ) : !searchQuery ? (
             // Welcome State
-            (<div className="text-center py-12">
+            <div className="text-center py-12">
               <div className="max-w-2xl mx-auto">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
                   <div className="text-center">
                     <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                       <Search size={24} className="text-primary" />
                     </div>
-                    <h3 className="font-semibold text-foreground mb-2">Search Medications</h3>
+                    <h3 className="font-semibold text-foreground mb-2">
+                      Search Medications
+                    </h3>
                     <p className="text-sm text-text-secondary">
                       Find any prescription or over-the-counter medication
                     </p>
                   </div>
-                  
+
                   <div className="text-center">
                     <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                       <MapPin size={24} className="text-secondary" />
                     </div>
-                    <h3 className="font-semibold text-foreground mb-2">Locate Pharmacies</h3>
+                    <h3 className="font-semibold text-foreground mb-2">
+                      Locate Pharmacies
+                    </h3>
                     <p className="text-sm text-text-secondary">
                       View nearby pharmacies on an interactive map
                     </p>
                   </div>
-                  
+
                   <div className="text-center">
                     <div className="w-16 h-16 bg-teal-600/20 rounded-full flex items-center justify-center mx-auto mb-3">
                       <Clock size={24} className="text-teal-600" />
                     </div>
-                    <h3 className="font-semibold text-foreground mb-2">Real-time Info</h3>
+                    <h3 className="font-semibold text-foreground mb-2">
+                      Real-time Info
+                    </h3>
                     <p className="text-sm text-text-secondary">
                       Get current availability, hours, and contact details
                     </p>
@@ -382,9 +346,18 @@ export default function HomepageDrugSearch() {
                 </div>
 
                 <div className="bg-muted rounded-lg p-6">
-                  <h3 className="font-semibold text-foreground mb-3">Popular Searches</h3>
+                  <h3 className="font-semibold text-foreground mb-3">
+                    Popular Searches
+                  </h3>
                   <div className="flex flex-wrap gap-2 justify-center">
-                    {['Aspirin', 'Ibuprofen', 'Insulin', 'Blood pressure medication', 'Allergy medicine', 'Antibiotics']?.map((drug) => (
+                    {[
+                      "Aspirin",
+                      "Ibuprofen",
+                      "Insulin",
+                      "Blood pressure medication",
+                      "Allergy medicine",
+                      "Antibiotics",
+                    ]?.map((drug) => (
                       <button
                         key={drug}
                         onClick={() => handleSearch(drug)}
@@ -396,13 +369,13 @@ export default function HomepageDrugSearch() {
                   </div>
                 </div>
               </div>
-            </div>)
+            </div>
           ) : null}
         </div>
       </main>
 
       {/* Footer */}
-      <Footer/>
+      <Footer />
     </div>
   );
 }

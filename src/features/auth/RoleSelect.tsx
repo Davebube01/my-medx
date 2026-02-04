@@ -1,23 +1,73 @@
-import { useAuth } from "../../hooks/useAuth";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Building2, User, Activity } from "lucide-react";
+import {
+  Building2,
+  Activity,
+  UserCog,
+  Stethoscope,
+  ChevronLeft,
+} from "lucide-react";
 import type { Role } from "../../types";
 
 export const RoleSelect = () => {
-  const { user, setUserRole } = useAuth();
   const navigate = useNavigate();
+  const [showPhcOptions, setShowPhcOptions] = useState(false);
 
-  const handleSelect = async (role: Role) => {
-    await setUserRole(role);
-    if (role === "pharmacy") navigate("/pharmacy/dashboard");
-    else if (role === "phc") navigate("/phc/dashboard");
-    else navigate("/search");
+  const handleSelect = (role: Role) => {
+    if (role === "pharmacy") navigate("/login?role=pharmacy");
+    else if (role === "phc") {
+      setShowPhcOptions(true);
+    }
+    // else navigate("/login");
   };
 
-  if (!user) return null; // Should be protected by Route anyway
+  const handlePhcSubRole = (subRole: "staff" | "oversight") => {
+    if (subRole === "staff") navigate("/login?role=phc");
+    else navigate("/login?role=oversight");
+  };
+
+  if (showPhcOptions) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center px-4 animate-in fade-in slide-in-from-right-8 duration-300">
+        <div className="max-w-3xl w-full mb-8 relative">
+          <button
+            onClick={() => setShowPhcOptions(false)}
+            className="absolute -left-12 top-1 p-2 text-gray-400 hover:text-gray-900 transition-colors"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900">
+              PHC Access Portal
+            </h2>
+            <p className="mt-3 text-gray-600">
+              Select your specific role within the Primary Healthcare system.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 max-w-3xl w-full">
+          <RoleCard
+            icon={Stethoscope}
+            title="Facility Staff"
+            description="For clinical staff working at a specific PHC facility."
+            onClick={() => handlePhcSubRole("staff")}
+            color="green"
+          />
+          <RoleCard
+            icon={UserCog}
+            title="Oversight / Monitor"
+            description="For LGA or State supervisors monitoring multiple facilities."
+            onClick={() => handlePhcSubRole("oversight")}
+            color="teal"
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center px-4">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center px-4 animate-in fade-in duration-300">
       <div className="max-w-3xl w-full text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900">
           Choose your account type
@@ -27,11 +77,11 @@ export const RoleSelect = () => {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6 max-w-5xl w-full">
+      <div className="grid md:grid-cols-2 gap-6 max-w-3xl w-full">
         {/* Pharmacy Option */}
         <RoleCard
           icon={Building2}
-          title="Pharmacy"
+          title="Pharmacy Partner"
           description="Manage inventory, record sales, and be visible to patients."
           onClick={() => handleSelect("pharmacy")}
           color="blue"
@@ -40,19 +90,10 @@ export const RoleSelect = () => {
         {/* PHC Option */}
         <RoleCard
           icon={Activity}
-          title="PHC"
-          description="Manage patient records, dispense drugs, and track inventory."
+          title="PHC System"
+          description="Access for PHC facilities and oversight monitors."
           onClick={() => handleSelect("phc")}
           color="green"
-        />
-
-        {/* User Option */}
-        <RoleCard
-          icon={User}
-          title="Patient"
-          description="Search for drugs and view your purchase history."
-          onClick={() => handleSelect("user")}
-          color="purple"
         />
       </div>
     </div>
@@ -78,8 +119,8 @@ const RoleCard = ({ icon: Icon, title, description, onClick, color }: any) => {
           color === "blue"
             ? "bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white"
             : color === "green"
-            ? "bg-green-50 text-green-600 group-hover:bg-green-600 group-hover:text-white"
-            : "bg-purple-50 text-purple-600 group-hover:bg-purple-600 group-hover:text-white"
+              ? "bg-green-50 text-green-600 group-hover:bg-green-600 group-hover:text-white"
+              : "bg-purple-50 text-purple-600 group-hover:bg-purple-600 group-hover:text-white"
         }`}
       >
         <Icon className="w-6 h-6" />
