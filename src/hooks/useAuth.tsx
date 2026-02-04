@@ -13,7 +13,7 @@ import type { Role, User } from "../types";
 interface AuthState {
   user: User | null;
   loading: boolean;
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: (role?: Role) => Promise<void>;
   signOut: () => Promise<void>;
   setUserRole: (role: Role) => Promise<void>;
 }
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(false);
   }, []);
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = async (role?: Role) => {
     // Simulate Google Sign In
     setLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 800));
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const newUser: User = {
       uid: "user123",
       phone: "+2348055555555",
-      role: "user", // Default, will prompt for selection if not set
+      role: role || "user", // Default to user if not specified
       createdAt: new Date().toISOString(),
     };
 

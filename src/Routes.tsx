@@ -20,23 +20,29 @@ import { PHCHistory } from "./features/phc/PHCHistory";
 import { PHCSettings } from "./features/phc/PHCSettings";
 import { PHCDrugs } from "./features/phc/PHCDrugs";
 
+// Oversight
+import { OversightLayout } from "./features/phc/OversightLayout";
+import { OversightOverview } from "./features/phc/OversightOverview";
+import { OversightInventory } from "./features/phc/OversightInventory";
+import { OversightDispensing } from "./features/phc/OversightDispensing";
+import { OversightQuality } from "./features/phc/OversightQuality";
+import { OversightPHCManagement } from "./features/phc/OversightPHCManagement";
+import { OversightPHCDetails } from "./features/phc/OversightPHCDetails";
+
 import HomepageDrugSearch from "./features/home/HomepageDrugSearch";
+import { LaunchPage } from "./features/home/LaunchPage";
+import { PHCLandingPage } from "./features/phc/PHCLandingPage";
 
 export const AppRoutes = () => {
   return (
     <ReactRoutes>
-      <Route path="/" element={<HomepageDrugSearch />} />
+      <Route path="/" element={<LaunchPage />} />
+      <Route path="/pharmacies" element={<HomepageDrugSearch />} />
+      <Route path="/phc" element={<PHCLandingPage />} />
       <Route path="/login" element={<SignIn />} />
 
       {/* Auth Selection */}
-      <Route
-        path="/role-select"
-        element={
-          <ProtectedRoute>
-            <RoleSelect />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/role-select" element={<RoleSelect />} />
 
       {/* Pharmacy Routes */}
       <Route path="/pharmacy">
@@ -93,7 +99,7 @@ export const AppRoutes = () => {
 
       {/* PHC Routes */}
       <Route path="/phc">
-        <Route index element={<Navigate to="dashboard" replace />} />
+        {/* <Route index element={<Navigate to="dashboard" replace />} /> */}
         <Route
           path="dashboard"
           element={
@@ -150,6 +156,24 @@ export const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+      </Route>
+
+      {/* Oversight Routes */}
+      <Route
+        path="/oversight"
+        element={
+          <ProtectedRoute allowedRoles={["oversight"]}>
+            <OversightLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<OversightOverview />} />
+        <Route path="phc/:id" element={<OversightPHCDetails />} />
+        <Route path="inventory" element={<OversightInventory />} />
+        <Route path="dispensing" element={<OversightDispensing />} />
+        <Route path="quality" element={<OversightQuality />} />
+        <Route path="phc-management" element={<OversightPHCManagement />} />
       </Route>
 
       {/* Fallback */}
